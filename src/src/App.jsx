@@ -102,10 +102,12 @@ function App() {
 
             <div className="hero-profile">
               <div className="profile-frame">
-                <div className="profile-placeholder">
-                  <span>SU</span>
-                </div>
-              </div>
+                <img
+  className="profile-image"
+  src="/images/saif_ullah.jpg"
+  alt="Saif Ullah"
+  loading="eager"
+/>
 
               <div className="profile-caption">
                 <strong>Saif Ullah</strong>
