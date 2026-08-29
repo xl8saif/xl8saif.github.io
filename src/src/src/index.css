@@ -282,12 +282,12 @@ a {
   pointer-events: none;
 }
 
-.profile-placeholder {
-  display: grid;
+.profile-image {
+  display: block;
+  width: 100%;
   aspect-ratio: 3 / 4;
-  place-items: center;
-  background: #dfd9ce;
-  color: #8d877b;
+  object-fit: cover;
+  object-position: center top;
 }
 
 .profile-placeholder span {
