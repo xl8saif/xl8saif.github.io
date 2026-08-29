@@ -104,7 +104,7 @@ function App() {
               <div className="profile-frame">
                 <img
   className="profile-image"
-  src="/images/saif-ullah.jpg"
+  src={`${import.meta.env.BASE_URL}images/saif-ullah.jpg`}
   alt="Saif Ullah"
   loading="eager"
 />
