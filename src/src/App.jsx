@@ -104,7 +104,7 @@ function App() {
               <div className="profile-frame">
                 <img
   className="profile-image"
-  src="/images/saif_ullah.jpg"
+  src="/images/saif-ullah.jpg"
   alt="Saif Ullah"
   loading="eager"
 />
