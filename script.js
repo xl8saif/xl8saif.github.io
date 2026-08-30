@@ -14,16 +14,16 @@
   }
 
   const languageNames = [
-    ['العربية', 'rtl'],
-    ['اردو', 'rtl'],
-    ['انڈس کوہستانی', 'rtl'],
-    ['English', 'ltr'],
-    ['فارسی', 'rtl'],
-    ['شینا', 'rtl'],
-    ['پښتو', 'rtl'],
-    ['ਪੰਜਾਬੀ', 'ltr'],
-    ['گوجری', 'rtl'],
-    ['Türkçe', 'ltr']
+    ['العربية', 'rtl', true],
+    ['اردو', 'rtl', true],
+    ['انڈس کوہستانی', 'rtl', false],
+    ['English', 'ltr', false],
+    ['فارسی', 'rtl', true],
+    ['شینا', 'rtl', false],
+    ['پښتو', 'rtl', true],
+    ['ਪੰਜਾਬੀ', 'ltr', false],
+    ['گوجری', 'rtl', false],
+    ['Türkçe', 'ltr', false]
   ];
 
   const style = document.createElement('style');
@@ -80,8 +80,8 @@
     const item = languageNames[index];
     if (!label || !item) return;
     label.textContent = item[0];
-    label.classList.toggle('native-script', item[1] === 'rtl' && index !== 5);
+    label.classList.toggle('native-script', item[2]);
     label.setAttribute('dir', item[1]);
-    label.setAttribute('lang', item[1] === 'rtl' ? 'ur' : 'en');
+    label.setAttribute('lang', item[1] === 'rtl' ? 'ar' : 'en');
   });
 })();
