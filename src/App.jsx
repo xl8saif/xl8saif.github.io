@@ -4,6 +4,7 @@ const navigation = [
   { label: "Home", id: "home" },
   { label: "About", id: "about" },
   { label: "Expertise", id: "expertise" },
+  { label: "Experience", id: "experience" },
   { label: "Projects", id: "projects" },
   { label: "Languages", id: "languages" },
   { label: "Contact", id: "contact" },
@@ -20,6 +21,44 @@ const languages = [
   ["ਪੰਜਾਬੀ", "Punjabi", "Professional", true],
   ["گوجری", "Gujri", "Working", true],
   ["Türkçe", "Turkish", "Working", false],
+];
+
+const experience = [
+  {
+    period: "2021 — PRESENT",
+    role: "Lower Division Clerk (BPS-11)",
+    organization: "Secretariat of Tourism, Sports, Culture, Archaeology & Museums",
+    location: "Government of Gilgit-Baltistan",
+    description: "Serving in the Government of Gilgit-Baltistan while continuing professional work in multilingual communication, documentation and language-focused projects.",
+  },
+  {
+    period: "28 DEC 2020 — 25 FEB 2021",
+    role: "Naib Qasid (BPS-01)",
+    organization: "Government of Gilgit-Baltistan",
+    location: "Gilgit-Baltistan, Pakistan",
+    description: "Early government service experience within the Gilgit-Baltistan administration, contributing to institutional operations and public-sector work.",
+  },
+  {
+    period: "15 NOV 2017 — PRESENT",
+    role: "CEO & Language Services Professional",
+    organization: "Waraq Enterprises",
+    location: "Pakistan · Remote",
+    description: "Leading a professional language-services enterprise, delivering translation, interpretation, localization and multilingual communication services for local and international clients.",
+  },
+  {
+    period: "2021 — PRESENT",
+    role: "Founder",
+    organization: "CloudTrans",
+    location: "Remote",
+    description: "Building a language-services and localization practice focused on translation, MTPE, LQA, multilingual content and technology-enabled workflows.",
+  },
+  {
+    period: "2024 — PRESENT",
+    role: "Co-Founder",
+    organization: "FiKR&CD — Forum for Indus-Kohistani Research & Culture Development",
+    location: "Gilgit-Baltistan, Pakistan",
+    description: "Working on the documentation, preservation and digital development of Indus-Kohistani language and cultural heritage through community-led research and language technology.",
+  },
 ];
 
 function App() {
@@ -92,9 +131,33 @@ function App() {
           </div>
         </section>
 
+        <section id="experience" className="content-section experience-section">
+          <div className="container">
+            <p className="section-label">03 — EXPERIENCE</p>
+            <div className="section-heading">
+              <h2>Work across institutions, technology and <em>heritage.</em></h2>
+              <p>A professional journey spanning public service, entrepreneurship, language technology and community-led cultural preservation.</p>
+            </div>
+            <div className="experience-list">
+              {experience.map((item, index) => (
+                <article className="experience-item" key={`${item.organization}-${item.period}`}>
+                  <div className="experience-index">{String(index + 1).padStart(2, "0")}</div>
+                  <div className="experience-period">{item.period}</div>
+                  <div className="experience-content">
+                    <h3>{item.role}</h3>
+                    <h4>{item.organization}</h4>
+                    <span>{item.location}</span>
+                    <p>{item.description}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <section id="projects" className="content-section">
           <div className="container">
-            <p className="section-label">03 — SELECTED WORK</p>
+            <p className="section-label">04 — SELECTED WORK</p>
             <div className="section-heading"><h2>Projects that define my work.</h2></div>
             <div className="projects-grid">
               <article className="project-card project-featured"><span className="project-number">01</span><p>LANGUAGE PRESERVATION</p><h3>Indus Kohistani Digital Preservation</h3><span className="project-line"/><p>Digital documentation, Unicode language data, multilingual resources and AI-assisted preservation for Indus Kohistani.</p></article>
@@ -107,7 +170,7 @@ function App() {
 
         <section id="languages" className="content-section section-dark language-section">
           <div className="container">
-            <p className="section-label">03 / LANGUAGES</p>
+            <p className="section-label">05 / LANGUAGES</p>
             <div className="language-heading">
               <div>
                 <h2>Fluency is more than knowing <em>words.</em></h2>
@@ -130,7 +193,7 @@ function App() {
 
         <section id="contact" className="contact-section">
           <div className="container contact-content">
-            <p className="section-label">05 — CONTACT</p>
+            <p className="section-label">06 — CONTACT</p>
             <h2>Let's build better communication across languages.</h2>
             <a className="email-link" href="mailto:xl8.saif@gmail.com">xl8.saif@gmail.com</a>
             <div className="contact-links">
