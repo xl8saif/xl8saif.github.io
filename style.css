@@ -1975,3 +1975,17 @@ button {
   border: 1px solid rgba(39, 174, 96, 0.3);
   color: #27ae60;
 }
+
+/* Hire modal visibility fix */
+#hire-modal.modal.is-open {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+#hire-modal.modal:not(.is-open) {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
