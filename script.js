@@ -81,11 +81,13 @@
       if (serviceDisplay) serviceDisplay.value = svc;
 
       modal.classList.add('active');
+      modal.classList.add('is-open');
       modal.setAttribute('aria-hidden', 'false');
       modal.style.display = 'flex';
       modal.style.visibility = 'visible';
       modal.style.opacity = '1';
       modal.style.pointerEvents = 'auto';
+      document.body.classList.add('modal-open');
       document.body.style.overflow = 'hidden';
 
       var firstInput = modal.querySelector('input:not([type="hidden"]):not([readonly]):not([tabindex="-1"])');
@@ -94,23 +96,27 @@
 
     function closeModal() {
       modal.classList.remove('active');
+      modal.classList.remove('is-open');
       modal.setAttribute('aria-hidden', 'true');
       modal.style.display = '';
       modal.style.visibility = '';
       modal.style.opacity = '';
       modal.style.pointerEvents = '';
+      document.body.classList.remove('modal-open');
       document.body.style.overflow = '';
     }
 
     hireButtons.forEach(function (btn) {
       btn.addEventListener('click', function (e) {
         e.preventDefault();
+        e.stopPropagation();
         openModal(btn.getAttribute('data-lang') || '', btn.getAttribute('data-service') || 'Translation / Localization');
       });
     });
     collabButtons.forEach(function (btn) {
       btn.addEventListener('click', function (e) {
         e.preventDefault();
+        e.stopPropagation();
         openModal(btn.getAttribute('data-lang') || 'General / Not Specified', btn.getAttribute('data-service') || 'Language Preservation / Documentation');
       });
     });
@@ -118,7 +124,7 @@
     var overlay = modal.querySelector('.modal__overlay');
     if (overlay) overlay.addEventListener('click', closeModal);
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
+      if (e.key === 'Escape' && (modal.classList.contains('active') || modal.classList.contains('is-open'))) closeModal();
     });
 
     if (form) {
