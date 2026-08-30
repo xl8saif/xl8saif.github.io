@@ -10,7 +10,6 @@
   var MAX_FILE_SIZE = 10 * 1024 * 1024;
   var ALLOWED_EXTENSIONS = ['.pdf','.doc','.docx','.txt','.xliff','.tmx','.ttx','.xlsx','.csv','.zip','.rar'];
 
-  /* Critical fix: initialise immediately when this script is loaded after DOMContentLoaded. */
   function boot() {
     initNavigation();
     initModal();
@@ -86,7 +85,8 @@
       if (serviceInput) serviceInput.value = svc;
       if (serviceDisplay) serviceDisplay.value = svc;
 
-      modal.classList.add('active');
+      // IMPORTANT: style.css uses .modal.is-open for visibility.
+      modal.classList.add('is-open');
       modal.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
 
@@ -95,7 +95,7 @@
     }
 
     function closeModal() {
-      modal.classList.remove('active');
+      modal.classList.remove('is-open');
       modal.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
     }
@@ -122,7 +122,7 @@
     if (overlay) overlay.addEventListener('click', closeModal);
 
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
+      if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
     });
 
     if (form) {
