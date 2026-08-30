@@ -82,6 +82,10 @@
 
       modal.classList.add('active');
       modal.setAttribute('aria-hidden', 'false');
+      modal.style.display = 'flex';
+      modal.style.visibility = 'visible';
+      modal.style.opacity = '1';
+      modal.style.pointerEvents = 'auto';
       document.body.style.overflow = 'hidden';
 
       var firstInput = modal.querySelector('input:not([type="hidden"]):not([readonly]):not([tabindex="-1"])');
@@ -91,6 +95,10 @@
     function closeModal() {
       modal.classList.remove('active');
       modal.setAttribute('aria-hidden', 'true');
+      modal.style.display = '';
+      modal.style.visibility = '';
+      modal.style.opacity = '';
+      modal.style.pointerEvents = '';
       document.body.style.overflow = '';
     }
 
