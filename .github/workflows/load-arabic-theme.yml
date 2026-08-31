@@ -9,22 +9,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Append Arabic theme to stylesheet
+      - name: Apply Arabic theme and final QA overrides
         run: |
           python - <<'PY'
           from pathlib import Path
           css=Path('style.css')
-          theme=Path('arabic-theme.css')
-          marker='/* ARABIC_THEME_LOADED */'
+          theme=Path('arabic-theme.css').read_text(encoding='utf-8')
+          qc=Path('arabic-qc.css').read_text(encoding='utf-8')
           s=css.read_text(encoding='utf-8')
+          marker='/* ARABIC_THEME_LOADED */'
           if marker not in s:
-              s += '\n'+marker+'\n'+theme.read_text(encoding='utf-8')+'\n'
-              css.write_text(s,encoding='utf-8')
+              s += '\n'+marker+'\n'+theme+'\n'
+          qc_marker='/* ARABIC_QC_LOADED */'
+          if qc_marker not in s:
+              s += '\n'+qc_marker+'\n'+qc+'\n'
+          css.write_text(s,encoding='utf-8')
           PY
       - name: Commit theme
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add style.css
-          git diff --cached --quiet || git commit -m "Apply Arabic desert coffee gold theme"
+          git diff --cached --quiet || git commit -m "Finalize Arabic typography and visual QA"
           git push
