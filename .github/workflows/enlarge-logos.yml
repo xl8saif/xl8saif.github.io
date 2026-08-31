@@ -1,0 +1,29 @@
+name: Enlarge portfolio logos
+on:
+  push:
+    paths-ignore:
+      - 'style.css'
+permissions:
+  contents: write
+jobs:
+  enlarge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enlarge logo marks
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('style.css')
+          css=p.read_text()
+          marker='/* LARGE LOGO MARKS */'
+          if marker not in css:
+              css += '''\n\n/* LARGE LOGO MARKS */\n.logo-card .mark,.logo-card:before{width:54px;height:54px;flex-basis:54px;border-radius:14px;font-size:.82rem}.logo-card .mark{font-size:1rem}.logo-card strong{font-size:.78rem}.logo-card small{font-size:.58rem}\n@media(max-width:700px){.logo-card .mark,.logo-card:before{width:46px;height:46px;flex-basis:46px}.logo-card strong{font-size:.68rem}.logo-card small{font-size:.54rem}}\n'''
+              p.write_text(css)
+          PY
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add style.css
+          git diff --cached --quiet || (git commit -m 'Make portfolio logos larger' && git push)
