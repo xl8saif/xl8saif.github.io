@@ -1,0 +1,389 @@
+name: Apply Arabic visual theme
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  arabic-theme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Apply Arabic theme
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          css = r'''
+
+/* =========================================================
+   ARABIC EDITION — Arabian Desert / Coffee / Antique Gold
+   Applied only when the language switcher sets body.rtl.
+   ========================================================= */
+.rtl {
+  --arabic-sand: #E9D8BA;
+  --arabic-sand-light: #F7EFE2;
+  --arabic-ivory: #FBF7EF;
+  --arabic-coffee: #5A3E2B;
+  --arabic-coffee-deep: #2D1E16;
+  --arabic-coffee-soft: #76543C;
+  --arabic-gold: #B08A4A;
+  --arabic-gold-light: #D3B273;
+  --arabic-ink: #34271F;
+  --arabic-muted: #756558;
+  --arabic-line: rgba(90,62,43,.16);
+}
+
+/* Abar Mid is the target Arabic typeface used by the Ministry of Hajj and Umrah.
+   The Ministry's identity guide specifies Abar Mid Regular/SemiBold/Bold.
+   A licensed local webfont can replace the fallback stack without changing the theme. */
+.rtl,
+.rtl body,
+.rtl button,
+.rtl input,
+.rtl textarea,
+.rtl select {
+  font-family: "Abar Mid", "Abar", "Noto Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+}
+
+.rtl body {
+  background: var(--arabic-coffee-deep);
+  color: var(--arabic-ivory);
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(211,178,115,.12), transparent 28%),
+    radial-gradient(circle at 88% 32%, rgba(176,138,74,.12), transparent 25%),
+    radial-gradient(circle at 50% 100%, rgba(90,62,43,.28), transparent 38%);
+}
+
+.rtl .header {
+  background: rgba(45,30,22,.88);
+  border-bottom-color: rgba(211,178,115,.20);
+  box-shadow: 0 8px 35px rgba(45,30,22,.28);
+}
+
+.rtl .brand {
+  letter-spacing: .08em;
+}
+
+.rtl .brand span,
+.rtl .eyebrow,
+.rtl .proof b,
+.rtl .work-list article > span,
+.rtl .service-grid article > span {
+  color: var(--arabic-gold-light);
+}
+
+.rtl .nav-links a { color: #F5EBDD; }
+.rtl .nav-links a:hover { color: var(--arabic-gold-light); }
+.rtl .nav-cta {
+  color: var(--arabic-coffee-deep) !important;
+  border-color: var(--arabic-gold);
+  background: linear-gradient(135deg, var(--arabic-gold-light), var(--arabic-gold));
+  box-shadow: 0 0 24px rgba(176,138,74,.16);
+}
+
+.rtl .language-switch {
+  margin-inline-start: 16px !important;
+  margin-inline-end: 0 !important;
+  border-color: rgba(211,178,115,.45) !important;
+  background: rgba(255,255,255,.04) !important;
+  color: #F7EFE2 !important;
+  font-family: inherit !important;
+}
+
+.rtl .hero:before {
+  background:
+    radial-gradient(circle at 72% 42%, rgba(176,138,74,.20), transparent 28%),
+    radial-gradient(circle at 20% 80%, rgba(211,178,115,.10), transparent 25%),
+    linear-gradient(125deg, #2D1E16 0%, #4B3324 52%, #251913 100%);
+}
+
+.rtl .hero:after {
+  border-color: rgba(211,178,115,.18);
+  box-shadow: 0 0 100px rgba(176,138,74,.07);
+}
+
+.rtl .hero h1,
+.rtl .section h2,
+.rtl .statement h2,
+.rtl .service-grid h3,
+.rtl .work-list h3 {
+  font-family: "Abar Mid", "Abar", "Noto Sans Arabic", "Segoe UI", sans-serif;
+  letter-spacing: 0;
+}
+
+.rtl .hero h1 {
+  font-weight: 700;
+  line-height: 1.12;
+  color: #FBF7EF;
+}
+
+.rtl .hero h1 em,
+.rtl .section h2 em,
+.rtl .statement em {
+  color: var(--arabic-gold-light);
+  font-style: normal;
+}
+
+.rtl .hero .lead,
+.rtl .copy,
+.rtl .copy-text,
+.rtl .service-grid p,
+.rtl .work-list p {
+  color: #D8C7B4;
+  line-height: 2;
+}
+
+.rtl .button {
+  font-family: inherit;
+  border-color: rgba(211,178,115,.32);
+}
+
+.rtl .button.dark {
+  color: var(--arabic-coffee-deep);
+  background: linear-gradient(135deg, #D8BB7D, #A77D3D);
+  border-color: var(--arabic-gold);
+}
+
+.rtl .button.dark:hover {
+  background: linear-gradient(135deg, #E0C58C, #B08A4A);
+  border-color: #D3B273;
+}
+
+.rtl .button.light {
+  background: rgba(247,239,226,.06);
+  color: #F7EFE2;
+  border-color: rgba(211,178,115,.28);
+}
+
+.rtl .button.light:hover {
+  background: rgba(211,178,115,.12);
+  border-color: var(--arabic-gold-light);
+}
+
+.rtl .proof { color: #BCA995; }
+.rtl .proof span { border-color: rgba(211,178,115,.20); }
+.rtl .proof b { font-family: inherit; font-weight: 700; }
+
+.rtl .hero-visual:before {
+  background: linear-gradient(145deg, rgba(118,84,60,.70), rgba(45,30,22,.94));
+  border-color: rgba(211,178,115,.20);
+}
+
+.rtl .hero-visual:after {
+  border-color: rgba(211,178,115,.28);
+}
+
+.rtl .portrait {
+  background: #3A281C;
+  border-color: rgba(45,30,22,.92);
+  box-shadow: 22px 25px 0 rgba(176,138,74,.45), 0 20px 60px rgba(25,15,10,.42);
+}
+
+.rtl .portrait-note strong { color: #FBF7EF; }
+.rtl .portrait-note span { color: #CDBBA7; }
+
+.rtl .floating {
+  background: rgba(74,50,35,.82);
+  border-color: rgba(211,178,115,.25);
+  color: #F7EFE2;
+}
+
+.rtl .floating small { color: #D5C09F; }
+
+.rtl .floating.two {
+  background: linear-gradient(135deg, rgba(211,178,115,.98), rgba(157,116,52,.96));
+  color: #2D1E16;
+  box-shadow: 8px 10px 0 rgba(25,15,10,.78);
+}
+
+.rtl .section {
+  background: rgba(45,30,22,.90);
+  color: #F7EFE2;
+}
+
+.rtl .section:nth-of-type(even) {
+  background: rgba(62,43,30,.86);
+}
+
+.rtl .dark {
+  background: rgba(35,23,17,.96);
+}
+
+.rtl .section h2 { color: #FBF7EF; font-weight: 700; line-height: 1.25; }
+.rtl .copy strong { color: #F7EFE2; }
+.rtl .underlink { border-bottom-color: var(--arabic-gold); }
+
+.rtl .service-grid {
+  background: rgba(211,178,115,.18);
+  border-color: rgba(211,178,115,.18);
+}
+
+.rtl .service-grid article {
+  background: linear-gradient(145deg, rgba(105,73,50,.72), rgba(45,30,22,.90));
+  border-color: rgba(255,255,255,.035);
+}
+
+.rtl .service-grid article:hover {
+  background: linear-gradient(145deg, rgba(125,88,59,.78), rgba(52,34,24,.94));
+  box-shadow: 0 20px 55px rgba(25,15,10,.34);
+}
+
+.rtl .service-grid h3 {
+  color: #FBF7EF;
+  font-weight: 700;
+  line-height: 1.35;
+  margin-top: 30px;
+}
+
+.rtl .service-grid p { color: #D7C5B2; }
+.rtl .service-grid a { border-bottom-color: var(--arabic-gold-light); color: #E5CFAB; }
+
+.rtl .ivory.section {
+  background: var(--arabic-sand-light) !important;
+  color: var(--arabic-ink);
+}
+
+.rtl .ivory.section:before {
+  background: linear-gradient(128deg, transparent 30%, rgba(176,138,74,.07) 45%, rgba(255,255,255,.55) 58%, transparent 78%);
+}
+
+.rtl .ivory.section:after {
+  background: radial-gradient(ellipse at 60% 35%, rgba(176,138,74,.16), rgba(255,255,255,0) 70%);
+}
+
+.rtl .ivory .eyebrow { color: var(--arabic-coffee-soft); }
+.rtl .ivory .heading h2,
+.rtl .ivory.section h2 { color: var(--arabic-coffee-deep); }
+.rtl .ivory .heading h2 em { color: var(--arabic-gold); }
+.rtl .ivory .muted { color: var(--arabic-muted); }
+
+.rtl .language-table-wrap {
+  border-color: rgba(90,62,43,.16);
+  background: rgba(255,255,255,.52);
+  box-shadow: 0 28px 70px rgba(90,62,43,.14), 0 8px 22px rgba(90,62,43,.06), inset 0 1px 0 rgba(255,255,255,.96);
+}
+
+.rtl .language-table th,
+.rtl .language-table td {
+  text-align: right;
+  border-bottom-color: var(--arabic-line);
+}
+
+.rtl .language-table th {
+  color: var(--arabic-coffee-soft);
+  background: rgba(234,216,186,.38);
+  font-family: inherit;
+  letter-spacing: 0;
+}
+
+.rtl .language-table td {
+  color: #584335;
+  font-family: inherit;
+}
+
+.rtl .language-table td:first-child { color: var(--arabic-coffee-deep); }
+.rtl .language-table td:nth-child(2) {
+  font-family: "Abar Mid", "Abar", "Noto Sans Arabic", sans-serif;
+  color: var(--arabic-gold);
+}
+.rtl .language-table td:last-child { color: var(--arabic-coffee-soft); }
+.rtl .language-table td:last-child:before { margin-right: 0; margin-left: 9px; background: var(--arabic-gold); box-shadow: 0 0 10px rgba(176,138,74,.30); }
+.rtl .language-table tbody tr:hover { background: rgba(176,138,74,.08); box-shadow: inset -4px 0 0 var(--arabic-gold); transform: translateX(-4px); }
+
+.rtl .work-list { border-top-color: var(--arabic-line); }
+.rtl .work-list article { border-bottom-color: var(--arabic-line); }
+.rtl .work-list article:hover { padding-right: 8px; }
+.rtl .work-list h3 { color: #FBF7EF; font-weight: 700; line-height: 1.4; }
+.rtl .work-list p { color: #D0BEAA; }
+.rtl .work-list .tag { color: var(--arabic-gold-light); }
+
+.rtl .statement {
+  border-top-color: rgba(211,178,115,.15);
+  background:
+    radial-gradient(circle at 72% 45%, rgba(176,138,74,.18), transparent 30%),
+    radial-gradient(circle at 15% 60%, rgba(211,178,115,.08), transparent 24%),
+    #2D1E16;
+}
+
+.rtl .statement h2 { color: #FBF7EF; font-weight: 700; line-height: 1.18; }
+
+.rtl .contact-links { border-top-color: var(--arabic-line); }
+.rtl .contact-links a { border-bottom-color: var(--arabic-line); }
+.rtl .contact-links a:hover { padding-right: 7px; }
+.rtl .contact-links span { color: #BCA995; letter-spacing: 0; }
+.rtl .contact-links b { color: #F7EFE2; }
+.rtl .email { color: #F7EFE2; border-bottom-color: var(--arabic-gold); }
+
+.rtl .footer {
+  background: #21150F;
+  color: #BCA995;
+  border-top-color: rgba(211,178,115,.14);
+}
+.rtl .footer a { color: var(--arabic-gold-light); }
+
+/* Arabic-specific rhythm and alignment */
+.rtl .eyebrow { font-weight: 700; text-transform: none; line-height: 1.6; }
+.rtl .hero .lead { max-width: 680px; }
+.rtl .actions { justify-content: flex-start; }
+.rtl .split > div:first-child,
+.rtl .heading,
+.rtl .hero-copy { text-align: right; }
+.rtl .copy { text-align: right; }
+.rtl .portrait-note { text-align: right; }
+.rtl .portrait-note span { text-align: left; }
+.rtl .service-grid article,
+.rtl .work-list article,
+.rtl .contact-links a { text-align: right; }
+.rtl .service-grid article > span { letter-spacing: 0; }
+.rtl .work-list .tag { letter-spacing: 0; }
+.rtl .email { direction: ltr; unicode-bidi: plaintext; }
+.rtl .contact-links a { flex-direction: row-reverse; }
+.rtl .social-label { flex-direction: row-reverse; }
+
+@media(max-width:900px){
+  .rtl .hero-visual { justify-self: start; }
+  .rtl .hero-copy,
+  .rtl .split > div:first-child,
+  .rtl .heading { text-align: right; }
+}
+
+@media(max-width:680px){
+  .rtl .language-switch { margin-inline-start: 8px !important; }
+  .rtl .hero h1 { font-size: clamp(2.9rem, 14vw, 4.7rem); line-height: 1.16; }
+  .rtl .hero .lead { font-size: 1rem; line-height: 1.95; }
+  .rtl .section h2 { font-size: clamp(2.2rem, 11vw, 3.6rem); line-height: 1.28; }
+  .rtl .service-grid h3 { font-size: 1.4rem; }
+  .rtl .work-list h3 { font-size: 1.45rem; }
+  .rtl .language-table td:nth-child(2) { font-size: 1.25rem; }
+}
+'''
+
+          path = Path('style.css')
+          current = path.read_text(encoding='utf-8')
+          marker = '/* =========================================================\n   ARABIC EDITION — Arabian Desert / Coffee / Antique Gold'
+          if marker not in current:
+              path.write_text(current + css, encoding='utf-8')
+              print('Arabic theme appended.')
+          else:
+              print('Arabic theme already present; nothing to do.')
+          PY
+
+      - name: Commit Arabic theme
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add style.css
+          git commit -m "Refine Arabic RTL visual theme"
+          git push
