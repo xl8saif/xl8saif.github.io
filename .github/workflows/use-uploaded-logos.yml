@@ -3,8 +3,6 @@ name: Use uploaded portfolio logos
 on:
   workflow_dispatch:
   push:
-    paths-ignore:
-      - '.github/workflows/use-uploaded-logos.yml'
 
 permissions:
   contents: write
