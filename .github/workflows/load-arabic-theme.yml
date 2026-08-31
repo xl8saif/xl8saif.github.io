@@ -1,0 +1,28 @@
+name: Load Arabic visual theme
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  theme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add Arabic stylesheet import
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('style.css')
+          s=p.read_text(encoding='utf-8')
+          marker='@import url("./arabic-theme.css");'
+          if marker not in s:
+              p.write_text(s+'\n'+marker+'\n',encoding='utf-8')
+          PY
+      - name: Commit theme import
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add style.css
+          git diff --cached --quiet || git commit -m "Load dedicated Arabic visual theme"
+          git push
