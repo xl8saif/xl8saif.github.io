@@ -23,6 +23,43 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Repair static asset references
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+
+          # This deployment publishes the repository root, so public/ is part of the URL.
+          s = s.replace('./images/', './public/images/')
+
+          # Use the uploaded local logos instead of remote favicons.
+          replacements = {
+              'https://www.sta.gov.sa/favicon.ico': './public/images/saudi-tourism-authority-seeklogo.png',
+              'https://www.productiveplayhouse.com/favicon.ico': './public/images/productiveplayhouselogo.jpg',
+              'https://www.pubgmobile.com/favicon.ico': './public/images/Pubg-Mobile-Logo.png',
+          }
+          for old, new in replacements.items():
+              s = s.replace(old, new)
+
+          # The original design has CSS pseudo-elements that create initials/placeholder marks
+          # beside the real uploaded images. Disable those marks and make the real logos dominant.
+          fix_css = '''
+          <style id="uploaded-logo-fix">
+          .logo-card:before,.logo-card .mark{content:none!important;display:none!important}
+          .logo-card img{display:block!important;width:76px!important;height:76px!important;flex:0 0 76px!important;min-width:76px!important;object-fit:contain!important;object-position:center!important;border-radius:12px!important;background:#fff!important;padding:8px!important;box-sizing:border-box!important;filter:none!important;mix-blend-mode:normal!important;opacity:1!important;visibility:visible!important;box-shadow:0 3px 12px rgba(0,0,0,.16)!important}
+          .logo-card{min-height:112px!important}
+          @media(max-width:700px){.logo-card img{width:56px!important;height:56px!important;flex-basis:56px!important;min-width:56px!important;padding:6px!important}.logo-card{min-height:92px!important}}
+          </style>
+          '''
+          if 'id="uploaded-logo-fix"' not in s:
+              s = s.replace('</head>', fix_css + '</head>', 1)
+
+          p.write_text(s, encoding='utf-8')
+          PY
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
