@@ -12,24 +12,40 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Fix uploaded logo paths and styling
+      - name: Replace placeholders with uploaded logos
         shell: bash
         run: |
           python - <<'PY'
           from pathlib import Path
+          import re
+
           p = Path('index.html')
           s = p.read_text(encoding='utf-8')
 
-          # GitHub Pages serves files inside public/ from the website root.
+          # public/ is the Vite source directory; GitHub Pages exposes it at /.
           s = s.replace('./public/images/', './images/')
 
-          # Keep every manually uploaded logo as a local asset.
-          # Do not replace remote logos for organizations whose logo files
-          # have not been uploaded to public/images yet.
+          # Use only the logo files that actually exist in public/images.
+          replacements = {
+              'https://www.sta.gov.sa/favicon.ico': './images/hajj&Umrahlogo.png',
+              'https://www.productiveplayhouse.com/favicon.ico': './images/FiKR&CD Logo.png',
+              'https://www.pubgmobile.com/favicon.ico': './images/CloudTrans-Logo - Copy.PNG',
+          }
+          for old, new in replacements.items():
+              s = s.replace(old, new)
 
-          # Remove any accidental CSS that hides uploaded logos.
-          s = s.replace('.logo-card img{display:none!important}', '.logo-card img{display:block!important}')
+          # Remove CSS-generated placeholder marks (MU, AW, SA, PP, PUBG, etc.).
+          s = re.sub(r'\.logo-card\[href\*="media-unit"\]\:before\{[^}]*\}', '', s)
+          s = re.sub(r'\.logo-card\[href\*="alwaseemtranslation"\]\:before\{[^}]*\}', '', s)
+          s = re.sub(r'\.logo-card\[href\*="haj\.gov\.sa"\]\:before\{[^}]*\}', '', s)
+          s = re.sub(r'\.logo-card\[href\*="sta\.gov\.sa"\]\:before\{[^}]*\}', '', s)
+          s = re.sub(r'\.logo-card\[href\*="productiveplayhouse"\]\:before\{[^}]*\}', '', s)
+          s = re.sub(r'\.logo-card\[href\*="pubgmobile"\]\:before\{[^}]*\}', '', s)
 
+          # Remove the generic pseudo-element placeholder as well.
+          s = s.replace('.logo-card .mark,.logo-card:before{', '.logo-card .mark{')
+
+          # Make real uploaded images prominent and visible.
           extra = '''
 .logo-card img{display:block!important;width:72px;height:72px;flex:0 0 72px;min-width:72px;object-fit:contain;object-position:center;border-radius:10px;filter:none!important;mix-blend-mode:normal!important;opacity:1!important;visibility:visible!important;background:transparent}
 .logo-card{min-height:108px}
@@ -48,5 +64,5 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
           git diff --cached --quiet && exit 0
-          git commit -m 'Fix uploaded logo paths for GitHub Pages'
+          git commit -m 'Replace logo placeholders with uploaded logos'
           git push
