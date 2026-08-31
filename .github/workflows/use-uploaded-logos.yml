@@ -12,29 +12,39 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Replace remote/generated logos with uploaded logo files
+      - name: Fix uploaded logo paths and styling
         shell: bash
         run: |
           python - <<'PY'
           from pathlib import Path
           p = Path('index.html')
           s = p.read_text(encoding='utf-8')
+
+          # GitHub Pages/Vite serves files from public/ at the site root.
+          # Therefore /public/images/... is incorrect after deployment; /images/... is correct.
+          s = s.replace('./public/images/', './images/')
+
+          # Make sure all manually uploaded organization logos use local files.
           replacements = {
-              'https://media-unit.com/favicon.ico': './public/images/dmcc-media-unit-logo-01-8.webp',
-              'https://alwaseemtranslation.com/favicon.ico': './public/images/alwaseemlogo.png',
-              'https://haj.gov.sa/favicon.ico': './public/images/hajj&Umrahlogo.png',
+              'https://www.sta.gov.sa/favicon.ico': './images/saudi-tourism-logo.png',
+              'https://www.productiveplayhouse.com/favicon.ico': './images/productive-playhouse-logo.png',
+              'https://www.pubgmobile.com/favicon.ico': './images/pubg-mobile-logo.png',
           }
           for old, new in replacements.items():
               s = s.replace(old, new)
-          s = s.replace('<span class="mark">W</span>', '<img src="./public/images/waraq-logo.png" alt="Waraq Enterprises logo">')
-          s = s.replace('<span class="mark">CT</span>', '<img src="./public/images/CloudTrans-Logo - Copy.PNG" alt="CloudTrans logo">')
-          s = s.replace('<span class="mark">F</span>', '<img src="./public/images/FiKR&CD Logo.png" alt="FiKR&CD logo">')
-          s = s.replace('.logo-card img{display:none!important}', '.logo-card img{display:block!important;width:62px;height:62px;flex:0 0 62px;object-fit:contain;object-position:center;border-radius:10px}')
-          s = s.replace('.logo-card img,.logo-card .mark,.logo-card:before{width:34px;height:34px;flex-basis:34px}', '.logo-card img,.logo-card .mark,.logo-card:before{width:44px;height:44px;flex-basis:44px}')
+
+          # Remove any accidental CSS that hides uploaded logos.
+          s = s.replace('.logo-card img{display:none!important}', '.logo-card img{display:block!important}')
+
+          extra = '''
+.logo-card img{display:block!important;width:72px;height:72px;flex:0 0 72px;object-fit:contain;object-position:center;border-radius:10px;filter:none!important;mix-blend-mode:normal!important;opacity:1!important;visibility:visible!important}
+.logo-card{min-height:108px}
+@media(max-width:700px){.logo-card img{width:52px;height:52px;flex-basis:52px}.logo-card{min-height:88px}}
+'''
           marker = '</style>\n</head>'
-          extra = '''\n.logo-card img{display:block!important;width:62px;height:62px;flex:0 0 62px;object-fit:contain;object-position:center;border-radius:10px;filter:none;mix-blend-mode:normal}\n.logo-card{min-height:98px}\n@media(max-width:700px){.logo-card img{width:46px;height:46px;flex-basis:46px}.logo-card{min-height:82px}}\n'''
           if extra.strip() not in s:
               s = s.replace(marker, extra + marker, 1)
+
           p.write_text(s, encoding='utf-8')
           PY
       - name: Commit changes
@@ -44,5 +54,5 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
           git diff --cached --quiet && exit 0
-          git commit -m 'Use uploaded organization logos in selected work'
+          git commit -m 'Fix uploaded logo paths for GitHub Pages'
           git push
