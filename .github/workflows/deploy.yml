@@ -27,6 +27,19 @@ jobs:
       - name: Install dependencies from lockfile
         run: npm ci
 
+      - name: Fix asset paths and logo presentation
+        run: |
+          sed -i 's#\./public/images/#./images/#g' index.html
+          cat >> style.css <<'EOF'
+
+/* GitHub Pages logo presentation fix */
+.logo-card:before{display:none!important;content:none!important}
+.logo-card{background:rgba(255,255,255,.055)!important;overflow:hidden}
+.logo-card img{display:block!important;width:76px!important;height:76px!important;flex:0 0 76px!important;object-fit:contain!important;object-position:center!important;background:#fff!important;padding:7px!important;border-radius:12px!important;filter:none!important;mix-blend-mode:normal!important;opacity:1!important}
+.logo-card span{min-width:0}
+@media(max-width:700px){.logo-card img{width:56px!important;height:56px!important;flex-basis:56px!important}}
+EOF
+
       - name: Build
         run: npm run build
 
