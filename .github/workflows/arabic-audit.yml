@@ -1,0 +1,30 @@
+name: Arabic content audit
+on:
+  workflow_dispatch:
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract Arabic content
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('index.html').read_text(encoding='utf-8')
+          chunks=[]
+          for m in re.finditer(r'>([^<>]*[\u0600-\u06ff][^<>]*)<',s):
+              t=' '.join(m.group(1).split())
+              if t and t not in chunks: chunks.append(t)
+          Path('arabic-audit.txt').write_text('\n'.join(chunks),encoding='utf-8')
+          print('\n'.join(chunks))
+          PY
+      - name: Commit audit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add arabic-audit.txt
+          git commit -m "Audit Arabic localization content" || true
+          git push
