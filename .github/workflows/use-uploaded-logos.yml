@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Use real uploaded logos only
+      - name: Use uploaded logos with visible white backgrounds
         shell: bash
         run: |
           python - <<'PY'
@@ -25,8 +25,7 @@ jobs:
           # GitHub Pages exposes Vite's public/ directory at the site root.
           s = s.replace('./public/images/', './images/')
 
-          # Remove cards whose logos were never uploaded instead of showing
-          # CSS/text placeholders or unrelated logos.
+          # Remove cards for organizations whose logo files have not been uploaded.
           missing_hrefs = [
               'https://www.sta.gov.sa/',
               'https://www.productiveplayhouse.com/',
@@ -36,20 +35,17 @@ jobs:
               pattern = r'<a class="logo-card" href="' + re.escape(href) + r'".*?</a>'
               s = re.sub(pattern, '', s, flags=re.DOTALL)
 
-          # Remove all CSS-generated placeholder marks (MU, AW, SA, PP, PUBG, etc.).
-          s = re.sub(r'\.logo-card\[href\*="media-unit"\]\:before\{[^}]*\}', '', s)
-          s = re.sub(r'\.logo-card\[href\*="alwaseemtranslation"\]\:before\{[^}]*\}', '', s)
-          s = re.sub(r'\.logo-card\[href\*="haj\.gov\.sa"\]\:before\{[^}]*\}', '', s)
-          s = re.sub(r'\.logo-card\[href\*="sta\.gov\.sa"\]\:before\{[^}]*\}', '', s)
-          s = re.sub(r'\.logo-card\[href\*="productiveplayhouse"\]\:before\{[^}]*\}', '', s)
-          s = re.sub(r'\.logo-card\[href\*="pubgmobile"\]\:before\{[^}]*\}', '', s)
+          # Remove CSS-generated logo placeholders.
+          for name in ['media-unit','alwaseemtranslation','haj\\.gov\\.sa','sta\\.gov\\.sa','productiveplayhouse','pubgmobile']:
+              s = re.sub(r'\\.logo-card\\[href\\*="' + name + r'"\\]\\:before\\{[^}]*\\}', '', s)
           s = s.replace('.logo-card .mark,.logo-card:before{', '.logo-card .mark{')
 
-          # Uploaded image files are the only visual marks in each card.
+          # Make every uploaded logo sit on a clean white tile so logos with
+          # transparent/black artwork remain clearly visible against the dark glass UI.
           extra = '''
-.logo-card img{display:block!important;width:72px;height:72px;flex:0 0 72px;min-width:72px;object-fit:contain;object-position:center;border-radius:10px;filter:none!important;mix-blend-mode:normal!important;opacity:1!important;visibility:visible!important;background:transparent}
-.logo-card{min-height:108px}
-@media(max-width:700px){.logo-card img{width:52px;height:52px;flex-basis:52px;min-width:52px}.logo-card{min-height:88px}}
+.logo-card img{display:block!important;width:76px;height:76px;flex:0 0 76px;min-width:76px;object-fit:contain;object-position:center;border-radius:12px;background:#fff!important;padding:8px;box-sizing:border-box;filter:none!important;mix-blend-mode:normal!important;opacity:1!important;visibility:visible!important;box-shadow:0 3px 12px rgba(0,0,0,.16)}
+.logo-card{min-height:112px}
+@media(max-width:700px){.logo-card img{width:56px;height:56px;flex-basis:56px;min-width:56px;padding:6px}.logo-card{min-height:92px}}
 '''
           marker = '</style>\n</head>'
           if extra.strip() not in s:
@@ -64,5 +60,5 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
           git diff --cached --quiet && exit 0
-          git commit -m 'Remove logo placeholders and use uploaded logos'
+          git commit -m 'Add white backgrounds to uploaded logos'
           git push
