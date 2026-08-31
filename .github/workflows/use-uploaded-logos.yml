@@ -20,26 +20,20 @@ jobs:
           p = Path('index.html')
           s = p.read_text(encoding='utf-8')
 
-          # GitHub Pages/Vite serves files from public/ at the site root.
-          # Therefore /public/images/... is incorrect after deployment; /images/... is correct.
+          # GitHub Pages serves files inside public/ from the website root.
           s = s.replace('./public/images/', './images/')
 
-          # Make sure all manually uploaded organization logos use local files.
-          replacements = {
-              'https://www.sta.gov.sa/favicon.ico': './images/saudi-tourism-logo.png',
-              'https://www.productiveplayhouse.com/favicon.ico': './images/productive-playhouse-logo.png',
-              'https://www.pubgmobile.com/favicon.ico': './images/pubg-mobile-logo.png',
-          }
-          for old, new in replacements.items():
-              s = s.replace(old, new)
+          # Keep every manually uploaded logo as a local asset.
+          # Do not replace remote logos for organizations whose logo files
+          # have not been uploaded to public/images yet.
 
           # Remove any accidental CSS that hides uploaded logos.
           s = s.replace('.logo-card img{display:none!important}', '.logo-card img{display:block!important}')
 
           extra = '''
-.logo-card img{display:block!important;width:72px;height:72px;flex:0 0 72px;object-fit:contain;object-position:center;border-radius:10px;filter:none!important;mix-blend-mode:normal!important;opacity:1!important;visibility:visible!important}
+.logo-card img{display:block!important;width:72px;height:72px;flex:0 0 72px;min-width:72px;object-fit:contain;object-position:center;border-radius:10px;filter:none!important;mix-blend-mode:normal!important;opacity:1!important;visibility:visible!important;background:transparent}
 .logo-card{min-height:108px}
-@media(max-width:700px){.logo-card img{width:52px;height:52px;flex-basis:52px}.logo-card{min-height:88px}}
+@media(max-width:700px){.logo-card img{width:52px;height:52px;flex-basis:52px;min-width:52px}.logo-card{min-height:88px}}
 '''
           marker = '</style>\n</head>'
           if extra.strip() not in s:
